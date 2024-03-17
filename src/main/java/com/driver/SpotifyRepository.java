@@ -44,14 +44,14 @@ public class SpotifyRepository {
     }
 
     public Artist createArtist(String name) {
-        Artist newArtist = new Artist(name);
+        Artist newArtist = new Artist(name.trim());
         artists.add(newArtist);
         return newArtist;
     }
 
     public Album createAlbum(String title, String artistName) {
-        Artist artist = findOrCreateArtist(artistName);
-        Album newAlbum = new Album(title);
+        Artist artist = findOrCreateArtist(artistName.trim());
+        Album newAlbum = new Album(title.trim());
         artistAlbumMap.computeIfAbsent(artist, k -> new ArrayList<>()).add(newAlbum);
         albums.add(newAlbum);
         return newAlbum;
@@ -59,7 +59,7 @@ public class SpotifyRepository {
 
     private Artist findOrCreateArtist(String name) {
         for (Artist artist : artists) {
-            if (artist.getName().equals(name)) {
+            if (artist.getName().equalsIgnoreCase(name)) {
                 return artist;
             }
         }
@@ -67,11 +67,11 @@ public class SpotifyRepository {
     }
 
     public Song createSong(String title, String albumName, int length) throws Exception{
-        Album album = findAlbum(albumName);
+        Album album = findAlbum(albumName.trim());
         if (album == null) {
             throw new Exception("Album does not exist");
         }
-        Song newSong = new Song(title, length);
+        Song newSong = new Song(title.trim(), length);
         albumSongMap.computeIfAbsent(album, k -> new ArrayList<>()).add(newSong);
         songs.add(newSong);
         return newSong;
@@ -79,7 +79,7 @@ public class SpotifyRepository {
 
     private Album findAlbum(String albumName) {
         for (Album album : albums) {
-            if (album.getTitle().equals(albumName)) {
+            if (album.getTitle().equalsIgnoreCase(albumName.trim())) {
                 return album;
             }
         }
@@ -87,11 +87,11 @@ public class SpotifyRepository {
     }
 
     public Playlist createPlaylistOnLength(String mobile, String title, int length) throws Exception {
-        User user = findUserByMobile(mobile);
+        User user = findUserByMobile(mobile.trim());
         if (user == null) {
             throw new Exception("User does not exist");
         }
-        Playlist playlist = new Playlist(title);
+        Playlist playlist = new Playlist(title.trim());
         List<Song> playlistSongs = new ArrayList<>();
         for (Song song : songs) {
             if (song.getLength() == length) {
@@ -107,7 +107,7 @@ public class SpotifyRepository {
     }
     private User findUserByMobile(String mobile) {
         for (User user : users) {
-            if (user.getMobile().equals(mobile)) {
+            if (user.getMobile().equalsIgnoreCase(mobile)) {
                 return user;
             }
         }
@@ -115,15 +115,15 @@ public class SpotifyRepository {
     }
 
     public Playlist createPlaylistOnName(String mobile, String title, List<String> songTitles) throws Exception {
-        User user = findUserByMobile(mobile);
+        User user = findUserByMobile(mobile.trim());
         if (user == null) {
             throw new Exception("User does not exist");
         }
-        Playlist playlist = new Playlist(title);
+        Playlist playlist = new Playlist(title.trim());
         List<Song> playlistSongs = new ArrayList<>();
         for (String songTitle : songTitles) {
             for (Song song : songs) {
-                if (song.getTitle().equals(songTitle)) {
+                if (song.getTitle().equalsIgnoreCase(songTitle.trim())) {
                     playlistSongs.add(song);
                 }
             }
@@ -137,12 +137,12 @@ public class SpotifyRepository {
     }
 
     public Playlist findPlaylist(String mobile, String playlistTitle) throws Exception {
-        User user = findUserByMobile(mobile);
+        User user = findUserByMobile(mobile.trim());
         if (user == null) {
             throw new Exception("User does not exist");
         }
         for (Playlist playlist : playlists) {
-            if (playlist.getTitle().equals(playlistTitle)) {
+            if (playlist.getTitle().equalsIgnoreCase(playlistTitle.trim())) {
                 if (!playlistListenerMap.containsKey(playlist) || !playlistListenerMap.get(playlist).contains(user)) {
                     playlistListenerMap.computeIfAbsent(playlist, k -> new ArrayList<>()).add(user);
                     userPlaylistMap.computeIfAbsent(user, k -> new ArrayList<>()).add(playlist);
@@ -154,13 +154,13 @@ public class SpotifyRepository {
     }
 
     public Song likeSong(String mobile, String songTitle) throws Exception {
-        User user = findUserByMobile(mobile);
+        User user = findUserByMobile(mobile.trim());
         if (user == null) {
             throw new Exception("User does not exist");
         }
         Song likedSong = null;
         for (Song song : songs) {
-            if (song.getTitle().equals(songTitle)) {
+            if (song.getTitle().equalsIgnoreCase(songTitle.trim())) {
                 if (!songLikeMap.containsKey(song) || !songLikeMap.get(song).contains(user)) {
                     song.setLikes(song.getLikes() + 1);
                     songLikeMap.computeIfAbsent(song, k -> new ArrayList<>()).add(user);
