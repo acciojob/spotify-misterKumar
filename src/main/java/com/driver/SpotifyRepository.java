@@ -195,7 +195,7 @@ public class SpotifyRepository {
                 mostPopular = artist;
             }
         }
-        return mostPopular != null ? mostPopular.getName() : null;
+        return mostPopular != null ? mostPopular.getName() : "Song does not exist";
     }
 
     public String mostPopularSong() {
@@ -205,6 +205,6 @@ public class SpotifyRepository {
                 mostPopular = song;
             }
         }
-        return mostPopular != null ? mostPopular.getTitle() : null;
+        return mostPopular != null ? mostPopular.getTitle() : "Song does not exist";
     }
 }
