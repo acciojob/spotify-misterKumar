@@ -80,7 +80,7 @@ public class SpotifyRepository {
         // search for album
         Album albumKey = null;
         for(Album a: albums){
-            if(albumName.equalsIgnoreCase(a.getTitle())){
+            if (albumName.trim().equalsIgnoreCase(a.getTitle().trim())) {
                 albumKey = a;
                 break;
             }
